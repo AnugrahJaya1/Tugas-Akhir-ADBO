@@ -5,14 +5,14 @@
  */
 package game;
 
+import com.jme3.animation.AnimChannel;
+import com.jme3.animation.AnimControl;
+import com.jme3.animation.LoopMode;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
-import com.jme3.audio.AudioData;
-import com.jme3.audio.AudioData.DataType;
-import com.jme3.audio.AudioNode;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.BulletAppState;
@@ -34,10 +34,12 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 /**
  *
- * @author User
+ * @author GL552VX
  */
 public class Engine extends AbstractAppState {
 
@@ -46,104 +48,82 @@ public class Engine extends AbstractAppState {
     private final AssetManager assetManager;
     private final InputManager inputManager;
     private BulletAppState bulletAppState;
-    private Spatial player, cactus;
-    private CharacterControl playerControl, cactusControl;
+    private Node player;//diedit harusna spatial
+    private CharacterControl playerControl;
     private final FlyByCamera flyByCamera;
-    private final Camera camera;
+    private final Camera cam;
     private ChaseCamera chaseCam;
-    private AudioNode backsound;
+    private Node localNode;
+
+    private AnimChannel channel;
+    private AnimControl control;
+
     private final Vector3f playerWalkDirection = Vector3f.ZERO;
 
     private boolean left = false, right = false, up = false, down = false;
+    private Spatial cactus;
+    private LinkedList<Spatial> listCactus, listFloor;
+    private Spatial floor;
 
     public Engine(SimpleApplication app) {
         rootNode = app.getRootNode();
         assetManager = app.getAssetManager();
         inputManager = app.getInputManager();
         flyByCamera = app.getFlyByCamera();
-        camera = app.getCamera();
+        cam = app.getCamera();
+        localNode = new Node();
+        player = new Node();
+        this.listCactus = new LinkedList();
+        this.listFloor = new LinkedList();
 
     }
 
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
-
         bulletAppState = new BulletAppState();
-
-        bulletAppState.setDebugEnabled(true);
+        //bulletAppState.setDebugEnabled(true);
         stateManager.attach(bulletAppState);
-
         rootNode.attachChild(localRootNode);
-//        this.initSound();
-        this.loadScene();
 
-        this.loadFloor();
-
-        this.loadPlayer();
-
-        this.loadCactus();
-
-        this.setUpLight();
-        //(1, 0, -2)
-        this.controler();
-
-        flyByCamera.setEnabled(false);
-
-        this.setCamera();
-
-    }
-
-    public void loadScene() {
+        //load scene
         Spatial scene = assetManager.loadModel("Scenes/MyScene.j3o");
         localRootNode.attachChild(scene);
-    }
 
-    public void loadFloor() {
-        //..load floor
-        Spatial floor = localRootNode.getChild("Floor");
-        //floor.move(0, 0, -3 * tpf);
-        bulletAppState.getPhysicsSpace().add(floor.getControl(RigidBodyControl.class));
-    }
-
-    public void loadPlayer() {
         //load player
-        player = localRootNode.getChild("Trex");
-        player.setMaterial(assetManager.loadMaterial("Materials/mats.j3m"));
-        CapsuleCollisionShape playerShape = new CapsuleCollisionShape(1, 10, 2);
-
-        playerControl = new CharacterControl(playerShape, 1.0f);
-        playerControl.setFallSpeed(100);
-        playerControl.setGravity(14.5f);
+        Node trex = (Node) assetManager.loadModel("Models/TyrannoBlender/Trex.j3o");//Node yang ada Model Trex
+        CapsuleCollisionShape capsulShape = new CapsuleCollisionShape(0.55f, 1.1f);//Membuat kapusl baru 
+        playerControl = new CharacterControl(capsulShape, 0.5f);
+        playerControl.setGravity(30);
         player.addControl(playerControl);
-
         bulletAppState.getPhysicsSpace().add(playerControl);
-    }
+        trex.setLocalTranslation(0, 0, 0);
+        trex.setLocalScale(0.2f);
+        player.attachChild(trex);
+        localRootNode.attachChild(player);
 
-    public void loadCactus() {
-        cactus = localRootNode.getChild("Kaktus");
-        //this.cactus.setLocalTranslation(0f, 0,0 );
-        //cactus.setMaterial(assetManager.loadMaterial("Materials/mats.j3m"));
-        //CapsuleCollisionShape cactusShape = new CapsuleCollisionShape(1, 1, 1);
+        //setting animasi 
+        control = player.getChild("Trex").getControl(AnimControl.class);
+        channel = control.createChannel();
+        channel.setAnim("Walk");
+        channel.setLoopMode(LoopMode.Loop);
+        channel.setSpeed(2f);
 
-        //cactusControl = new CharacterControl(cactusShape, 1.0f);
-        //cactus.move(0, 0, -3 * tpf);
-        //cactus.addControl(cactusControl);
-        //bulletAppState.getPhysicsSpace().add(cactusControl);
-    }
-
-    private void setUpLight() {
-        // We add light so we see the scene
+        //setting light
         DirectionalLight dr = new DirectionalLight();
         dr.setDirection(new Vector3f(2.8f, -2.8f, -2.8f).normalizeLocal());
         dr.setColor(ColorRGBA.White);
         rootNode.addLight(dr);
-    }
+        this.controler();
 
-    public void setCamera() {
-        //chaseCam = new ChaseCamera(camera, player, inputManager);
-        camera.setLocation(new Vector3f(-19.6191f, 13.182131f, -27.741205f));
+        //camera setting
+        flyByCamera.setEnabled(false);
+       // chaseCam = new ChaseCamera(cam, player, inputManager);
+        cam.setLocation(new Vector3f(-2.4425137f, 4.6245356f, -5.354741f));
+        cam.setRotation(new Quaternion(0.24459876f, 0.19741872f, -0.050939977f, 0.9479464f)) ;//Memasukan floor
+        this.addFloor();
 
-        camera.setRotation(new Quaternion(0.2087082f, 0.33064002f, -0.07522783f, 0.9173106f));
+        //Memasukan Kaktus
+        this.addCactus();
     }
 
     public void controler() {
@@ -178,6 +158,7 @@ public class Engine extends AbstractAppState {
                 right = keyPressed;
             } else if (name.equals("jump")) {
                 playerControl.jump();
+
             }
 
         }
@@ -191,10 +172,10 @@ public class Engine extends AbstractAppState {
 
     }
 
-    @Override
+    //@Override
     public void update(float tpf) {
-        Vector3f camDir = camera.getDirection().clone();
-        Vector3f camLeft = camera.getLeft().clone();
+        Vector3f camDir = cam.getDirection().clone();
+        Vector3f camLeft = cam.getLeft().clone();
         camDir.y = 0;
         camLeft.y = 0;
 
@@ -221,48 +202,53 @@ public class Engine extends AbstractAppState {
             playerControl.setWalkDirection(playerWalkDirection);
         }
 
-//        Spatial kaktus = localRootNode.getChild("Kaktus");
-//        ****\
-        this.cactus.move(0, 0, -3 * tpf);
-        //this.loadFloor(tpf);
-        //this.loadCactus();
-//        System.out.println("X = " + this.player.getLocalTranslation().x);
-//        System.out.println("Y = " + this.player.getLocalTranslation().y);
-//        System.out.println("Z = " + this.player.getLocalTranslation().z);
-//
-//        System.out.println("X = " + this.cactus.getLocalTranslation().x);
-//        System.out.println("Y = " + this.cactus.getLocalTranslation().y);
-//        System.out.println("Z = " + this.cactus.getLocalTranslation().z);
-        if (Math.floor(this.player.getLocalTranslation().z) ==
-                Math.ceil(this.cactus.getLocalTranslation().z)) {
-            System.out.println("X = " + this.player.getLocalTranslation().x);
-            System.out.println("Y = " + this.player.getLocalTranslation().y);
-            System.out.println("Z = " + this.player.getLocalTranslation().z);
+        this.moveCactus(tpf);
+        this.moveFloor(tpf);
 
-            System.out.println("X = " + this.cactus.getLocalTranslation().x);
-            System.out.println("Y = " + this.cactus.getLocalTranslation().y);
-            System.out.println("Z = " + this.cactus.getLocalTranslation().z);
+    }
+
+    public void addCactus() {
+        this.cactus = localRootNode.getChild("Kaktus");
+        this.cactus.setLocalScale(0.4f);
+        this.cactus.setLocalTranslation(0.5f, 1.52f, 10);
+        this.listCactus.addFirst(this.cactus);
+        this.listCactus.addLast(this.cactus);
+        //bulletAppState.getPhysicsSpace().add(this.cactus.getControl(RigidBodyControl.class));
+    }
+
+    public void addFloor() {
+        this.floor = localRootNode.getChild("Floor");
+        this.listFloor.addFirst(this.floor);
+        this.listFloor.addLast(this.floor);
+        bulletAppState.getPhysicsSpace().add(this.floor.getControl(RigidBodyControl.class));
+    }
+
+    public void moveCactus(float tpf) {
+        Iterator<Spatial> iteratorCactus = this.listCactus.iterator();
+
+        while (iteratorCactus.hasNext()) {
+            Spatial iCactus = iteratorCactus.next();
+            iCactus.move(0, 0, -2.5f * tpf);
+            //System.out.println("CACTUS " + iCactus.getLocalTranslation());
+            if (iCactus.getLocalTranslation().z <= -15) {
+                iCactus.setLocalTranslation(0.5f, 1.52f, 10);
+            }
+        }
+    }
+
+    public void moveFloor(float tpf) {
+        Iterator<Spatial> iteratorFloor = this.listFloor.iterator();
+
+        while (iteratorFloor.hasNext()) {
+
+            Spatial iFloor = iteratorFloor.next();
+            //iFloor.setLocalTranslation(-28.137022f, -3.6917496f, 50.410004f);
+            iFloor.move(0, 0, -1.5f * tpf);
+            //System.out.println("FLOOR " + iFloor.getLocalTranslation());
+            if (iFloor.getLocalTranslation().z <= 11.6f) {
+                iFloor.setLocalTranslation(-28.137022f, -3.6917496f, 50.410004f);
+            }
         }
     }
 
 }
-
-//    public void initSound(){
-//        backsound=new AudioNode(assetManager, "Sounds/BackSound/Backsound.wav", DataType.Stream);
-//        backsound.setLooping(true);
-//        backsound.setPositional(true);
-//        backsound.setVolume(3);
-//        rootNode.attachChild(backsound);
-//        backsound.play();
-//        
-//    }
-//        ****
-//      BoundingBox boundingBox = (BoundingBox) kaktus.getWorldBound();
-//      float radius = boundingBox.getXExtent();
-//      float height = boundingBox.getYExtent();
-//      CapsuleCollisionShape kaktusShape = new CapsuleCollisionShape(radius,height);
-//       
-//      CharacterControl kaktusControl = new CharacterControl(kaktusShape,1.0f);
-//     
-//   
-//      bulletAppState.getPhysicsSpace().add(kaktusControl);
