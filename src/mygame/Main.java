@@ -54,7 +54,6 @@ public class Main extends SimpleApplication {
         scoreLabel.setText("Score : ");
         guiNode.attachChild(scoreLabel);
         
-        
         final BitmapText highScoreLabel = new BitmapText(guiFont, false);
         highScoreLabel.setSize(guiFont.getCharSet().getRenderedSize());
         highScoreLabel.setColor(ColorRGBA.Red);
