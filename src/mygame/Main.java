@@ -1,10 +1,13 @@
 package mygame;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.audio.AudioData;
+import com.jme3.audio.AudioNode;
 import com.jme3.font.BitmapText;
 import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.RenderManager;
 import game.Engine;
+import scoreBoard.ScoreBoard;
 
 /**
  * This is the Main Class of your Game. You should only do initialization here.
@@ -20,10 +23,13 @@ public class Main extends SimpleApplication {
     }
     private int score;
     private float temp;
+    
+    private ScoreBoard scoreBoard;
 
     @Override
     public void simpleInitApp() {
         stateManager.attach(new Engine(this));
+        this.scoreBoard=new ScoreBoard();
         viewPort.setBackgroundColor(ColorRGBA.White);
     }
 
@@ -64,19 +70,14 @@ public class Main extends SimpleApplication {
         
         if (this.temp >= 0.05f) {
             this.score++;
-
+            this.scoreBoard.setScore(score);
             temp = 0;
         } else {
             temp += tpf;
         }
-        teks.setText(this.score + "");
-        guiNode.attachChild(teks);
-        
-        
-
+        teks.setText(this.scoreBoard.getScore() + "");
+        guiNode.attachChild(teks); 
     }
-
-
 }
 /**
 //     * Method untuk menampilkan String String Scrore dan String High Score
