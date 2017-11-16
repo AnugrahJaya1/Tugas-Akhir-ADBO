@@ -61,7 +61,7 @@ public class Engine extends AbstractAppState {
 
     private AnimChannel channel;
     private AnimControl control;
-
+    private boolean jump = false;
     private final Vector3f playerWalkDirection = Vector3f.ZERO;
 
     private boolean left = false, right = false, up = false, down = false;
@@ -225,6 +225,7 @@ public class Engine extends AbstractAppState {
             } else if (name.equals("right")) {
                 right = keyPressed;
             } else if (name.equals("jump")) {
+                jump = true;
                 playerControl.jump();
             }
         }
@@ -296,7 +297,7 @@ public class Engine extends AbstractAppState {
 
         this.cactus.setLocalScale(0.4f);
 
-        this.cactus.setLocalTranslation(0.5f, 1.52f, 10);
+        this.cactus.setLocalTranslation(0.5f, 1.52f, 15);
         this.listCactus.addFirst(this.cactus);//menambahkan cactus ke-1
         this.listCactus.addLast(this.cactus);//menambahkan cactus ke-2
         //bulletAppState.getPhysicsSpace().add(this.cactus.getControl(RigidBodyControl.class));
@@ -324,13 +325,13 @@ public class Engine extends AbstractAppState {
             Spatial iCactus = iteratorCactus.next();
             if (player.collideWith(iCactus.getWorldBound(), new CollisionResults()) != 0) {//otomatis kalau kena kaktus
                 // System.out.println("collide");
-                setEnabled(!isEnabled());//udah berhenti di ekor kalau 1024 x 740
+                //setEnabled(!isEnabled());//udah berhenti di ekor kalau 1024 x 740
                 //kalau 640 aman
             }
             iCactus.move(0, 0, -2.5f * tpf);//bergerak di sumbu z dengan kecepatan -2.5f
             //System.out.println("CACTUS " + iCactus.getLocalTranslation());
             if (iCactus.getLocalTranslation().z <= -15) {
-                iCactus.setLocalTranslation(0.5f, 1.52f, 10);//setting lokasi cactus baru
+                iCactus.setLocalTranslation(player.getLocalTranslation().x+0.555555f, 1.52f, 10);//setting lokasi cactus baru 0.5f(posisi x)
             }
         }
     }
@@ -351,7 +352,7 @@ public class Engine extends AbstractAppState {
             iFloor.move(0, 0, -1.5f * tpf);//bergerak di sumbu z dengan kecepatan -1.5f
             //System.out.println("FLOOR " + iFloor.getLocalTranslation());
             if (iFloor.getLocalTranslation().z <= 11.6f) {
-                iFloor.setLocalTranslation(-28.137022f, -3.6917496f, 50.410004f);//setting lokasi floor baru
+                iFloor.setLocalTranslation(-28.137022f, -3.6917496f, 50f);//setting lokasi floor baru
             }
         }
     }
