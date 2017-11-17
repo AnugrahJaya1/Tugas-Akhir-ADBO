@@ -5,10 +5,13 @@
  */
 package Engine;
 
+import Animation.Animation;
 import AudioPack.Audio;
+import MyGameScene.Burung;
 import MyGameScene.Floor;
 import MyGameScene.Kaktus;
 import MyGameScene.Scene;
+import Setting.SettingLight;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
@@ -70,7 +73,7 @@ public class Engine extends AbstractAppState {
 
     private boolean left = false, right = false, up = false, down = false;
     private Spatial cactus;
-    private Spatial burung;
+    //private Spatial burung;
     private LinkedList<Spatial> listCactus, listFloor;
     private AudioNode backsound;
     private AnimControl control2;
@@ -79,6 +82,9 @@ public class Engine extends AbstractAppState {
     private Scene scene;
     private Kaktus kaktus;
     private Floor floor;
+    private SettingLight settingLight;
+    private Burung burung;
+    private Animation animation;
     /**
      * Constructor kelas Engine
      *
@@ -98,6 +104,9 @@ public class Engine extends AbstractAppState {
         this.scene=new Scene(assetManager);
         this.kaktus=new Kaktus(assetManager);
         this.floor=new Floor(assetManager);
+        this.settingLight=new SettingLight();
+        this.burung=new Burung(assetManager);
+        this.animation=new Animation();
     }
 
     /**
@@ -112,33 +121,76 @@ public class Engine extends AbstractAppState {
         //bulletAppState.setDebugEnabled(true);
         stateManager.attach(bulletAppState);
         rootNode.attachChild(localRootNode);
+        
+        
         //load scene
         this.scene.attachToRoot(localRootNode);
+        //load Kaktus
         this.kaktus.addToLinkedList(localRootNode);
         //load player
         this.loadPlayer();
-         this.addBurung();
-        //setting animasi 
+        //load burung
+        this.burung.addToLinkedList(localRootNode);
+        //load animasi
+        this.animation.setAnimation(localRootNode, "Burung");
         
-        this.settingAnimasiTrex();
-        this.settingAnimasiBurung();
+        this.settingAnimasiTrex();//blom di bikin oop
+        
         //setting light
         this.settingLight();
-        
+        localRootNode.addLight(this.settingLight.getDirectionalLight());
         //camera setting
-        this.settingCamera();
-
-        //memasukan floor
-       // this.addFloor();
-
-       // this.addCactus();
+        this.settingCamera();//bloom oop 
+        //load floor
         this.floor.addToLinkedList(localRootNode,bulletAppState);
+        
         this.audio.initAudio(assetManager, localRootNode);
       
         
     }
+    @Override
+    public void update(float tpf) {
+        Vector3f camDir = cam.getDirection().clone();
+        Vector3f camLeft = cam.getLeft().clone();
+        camDir.y = 0;
+        camLeft.y = 0;
+        // memgubah koor tapi ga bisa lompat kalau di taro disini;
+
+        //playerControl.setPhysicsLocation(new Vector3f(0, 0, 0));
+        System.out.println(player.getLocalTranslation().x);//masih rubah2
+        camDir.normalizeLocal();
+        camLeft.normalizeLocal();
+
+        playerWalkDirection.set(0, 0, 0);
+
+        if (left) {
+            playerWalkDirection.addLocal(camLeft);
+        }
+        if (right) {
+            playerWalkDirection.addLocal(camLeft.negate());
+        }
+        if (up) {
+            playerWalkDirection.addLocal(camDir);
+        }
+        if (down) {
+            playerWalkDirection.addLocal(camDir.negate());
+        }
+
+        if (player != null) {
+            playerWalkDirection.multLocal(100f).multLocal(tpf);
+            playerControl.setWalkDirection(playerWalkDirection);
+        }
+
+        //this.moveCactus(tpf);//method agar kaktus gerak
+       
+        this.kaktus.move(tpf,localRootNode);
+        this.floor.move(tpf, localRootNode);
+        this.burung.move(tpf, localRootNode);
+    }
 
 
+    
+    
 
     /**
      * Method loadPlayer method ini berfungsi untuk meload player dari folder
@@ -160,15 +212,6 @@ public class Engine extends AbstractAppState {
         localRootNode.attachChild(player);//menambahkan player kedalam localRootNode
     }
     
-    public void addBurung(){
-        this.burung=assetManager.loadModel("Models/BurungObs/Bird.j3o");
-        this.burung.setLocalTranslation(0.5f, 1.52f, 10);
-        this.burung.rotate(0, 0, 0);
-        localRootNode.attachChild(burung);
-         
-        
-        
-    }
 
     /**
      * Method settingAnimasi menyetting animasi memberikan speed
@@ -181,13 +224,13 @@ public class Engine extends AbstractAppState {
         channel.setSpeed(2f);//memberikan speed
     }
     
-    public void settingAnimasiBurung() {
-        control2 = localRootNode.getChild("Burung").getControl(AnimControl.class);
-        channel2 = control2.createChannel();
-        channel2.setAnim("Walk");
-        channel2.setLoopMode(LoopMode.Loop);
-        channel2.setSpeed(2f);//memberikan speed
-    }
+//    public void settingAnimasiBurung() {
+//        control2 = localRootNode.getChild("Burung").getControl(AnimControl.class);
+//        channel2 = control2.createChannel();
+//        channel2.setAnim("Walk");
+//        channel2.setLoopMode(LoopMode.Loop);
+//        channel2.setSpeed(2f);//memberikan speed
+//    }
     
 
     /**
@@ -269,42 +312,5 @@ public class Engine extends AbstractAppState {
      *
      * @param tpf
      */
-    @Override
-    public void update(float tpf) {
-        Vector3f camDir = cam.getDirection().clone();
-        Vector3f camLeft = cam.getLeft().clone();
-        camDir.y = 0;
-        camLeft.y = 0;
-        // memgubah koor tapi ga bisa lompat kalau di taro disini;
-
-        //playerControl.setPhysicsLocation(new Vector3f(0, 0, 0));
-        System.out.println(player.getLocalTranslation().x);//masih rubah2
-        camDir.normalizeLocal();
-        camLeft.normalizeLocal();
-
-        playerWalkDirection.set(0, 0, 0);
-
-        if (left) {
-            playerWalkDirection.addLocal(camLeft);
-        }
-        if (right) {
-            playerWalkDirection.addLocal(camLeft.negate());
-        }
-        if (up) {
-            playerWalkDirection.addLocal(camDir);
-        }
-        if (down) {
-            playerWalkDirection.addLocal(camDir.negate());
-        }
-
-        if (player != null) {
-            playerWalkDirection.multLocal(100f).multLocal(tpf);
-            playerControl.setWalkDirection(playerWalkDirection);
-        }
-
-        //this.moveCactus(tpf);//method agar kaktus gerak
-       
-        this.kaktus.move(tpf,localRootNode);
-        this.floor.move(tpf, localRootNode);
-    }
+    
 }
