@@ -21,6 +21,11 @@ import com.jme3.scene.Node;
 public class Audio {
 
     private AudioNode backsound;
+    /**
+     * Method untuk menambahkan backsound ketika game dijalankan
+     * @param assetManager
+     * @param root 
+     */
     public void initAudio(AssetManager assetManager,Node root) {
         backsound = new AudioNode(assetManager, "Sounds/Backsound/fixed mono.wav", AudioData.DataType.Buffer);//mengambil lagu dari 
         backsound.setLooping(true);

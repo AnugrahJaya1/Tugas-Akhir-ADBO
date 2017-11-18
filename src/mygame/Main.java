@@ -10,10 +10,8 @@ import Engine.Engine;
 import scoreBoard.ScoreBoard;
 
 /**
- * This is the Main Class of your Game. You should only do initialization here.
- * Move your Logic into AppStates or Controls
- *
- * @author normenhansen
+ * Kelas main untuk menjalankan game
+ * @author GL552VX
  */
 public class Main extends SimpleApplication {
 

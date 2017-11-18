@@ -12,5 +12,9 @@ import com.jme3.scene.Node;
  * @author GL552VX
  */
 public interface Attach {
+    /**
+     * method untuk menempelkan suatu node ke rootNode
+     * @param root 
+     */
      public void attachToRoot(Node root);
 }

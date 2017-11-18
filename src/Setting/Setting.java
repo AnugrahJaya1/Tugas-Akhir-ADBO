@@ -10,5 +10,6 @@ package Setting;
  * @author GL552VX
  */
 public interface Setting {
+    
     public void setting();
 }

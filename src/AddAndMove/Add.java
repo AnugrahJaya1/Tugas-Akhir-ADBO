@@ -13,5 +13,10 @@ import com.jme3.scene.Spatial;
  * @author GL552VX
  */
 public interface Add {
+    /**
+     * Method ini berfungsi untuk mengambil Node dari localRootNode lalu menyimpannya kedalam list
+     * @param localRootNode 
+     */   
+    
     public void addToLinkedList(Node localRootNode);
 }

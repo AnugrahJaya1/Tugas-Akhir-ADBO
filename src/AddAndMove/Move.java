@@ -12,5 +12,10 @@ import com.jme3.scene.Node;
  * @author GL552VX
  */
 public interface Move {
+    /**
+     * Method ini berfungsi untuk menggerakan Sebuah model
+     * @param tpf
+     * @param localRootNode 
+     */
     public void move(float tpf,Node localRootNode);
 }

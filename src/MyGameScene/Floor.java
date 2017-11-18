@@ -27,6 +27,12 @@ public class Floor implements Move {
         
     }
     
+    /**
+     * Method untuk menggerakan Floor
+     * 
+     * @param tpf
+     * @param localRootNode 
+     */
     @Override
     public void move(float tpf, Node localRootNode) {
         Iterator<Spatial> iteratorFloor = this.listFloor.iterator();
@@ -44,6 +50,11 @@ public class Floor implements Move {
         }
     }
     
+    /**
+     * Method untuk menambahkan lantai ke dalam LinkedList
+     * @param localRootNode
+     * @param bullet 
+     */
 
     public void addToLinkedList(Node localRootNode,BulletAppState bullet) {
         this.floor = localRootNode.getChild("Floor");//load cactus dari Scene

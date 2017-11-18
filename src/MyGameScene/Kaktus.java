@@ -24,6 +24,12 @@ public class Kaktus  implements Move,Add {
         this.listCactus=new LinkedList();
     }
     
+    /**
+     * Method untuk menggerakan kaktus
+     * @param tpf
+     * @param localRootNode 
+     */
+    
     public void move(float tpf,Node localRootNode) {
        Iterator<Spatial> iteratorCactus = this.listCactus.iterator();
 
@@ -45,6 +51,10 @@ public class Kaktus  implements Move,Add {
         }
     }
   
+    /**
+     * method untuk menambahkan kaktus ke dalam LinkedList
+     * @param localRootNode 
+     */
  
     public void addToLinkedList(Node localRootNode) {
      this.cactus =localRootNode.getChild("Kaktus");//load cactus dari Scene

@@ -16,14 +16,26 @@ import com.jme3.math.Vector3f;
 public class SettingLight implements Setting{
     DirectionalLight directionalLight;
     
+    /**
+     * Constructor yang berfungsi menginisialisasi atribut direction light
+     */
     public SettingLight(){
         this.directionalLight=new DirectionalLight();
     }
+    
+    /**
+     * Method yang berfungsi mensetetting Light
+     */
     @Override
     public void setting() {
         directionalLight.setDirection(new Vector3f(2.8f, -2.8f, -2.8f).normalizeLocal());
         directionalLight.setColor(ColorRGBA.White);//set color white
     }
+    
+    /**
+     * Geter dari atribut directionalLight
+     * @return 
+     */
     
     public DirectionalLight getDirectionalLight(){
         return this.directionalLight;

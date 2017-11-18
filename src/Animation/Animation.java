@@ -19,7 +19,13 @@ import com.jme3.scene.Node;
 public class Animation {
     protected AnimChannel channel;
     protected AnimControl control;
-     public void setAnimation(Node root,String modelName){
+    
+    /**
+     * Method ini berfungsi untuk Menset animasi ketika berjalan
+     * @param root
+     * @param modelName 
+     */
+    public void setAnimation(Node root,String modelName){
         control = root.getChild(modelName).getControl(AnimControl.class);
         channel = control.createChannel();
         channel.setAnim("Walk");

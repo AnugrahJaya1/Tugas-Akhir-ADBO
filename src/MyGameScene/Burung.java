@@ -25,6 +25,12 @@ public class Burung  implements Add,Move{
         this.listBurung=new LinkedList();
     }
     
+    /**
+     * method untuk menggerakan burung 
+     * @param tpf
+     * @param localRootNode 
+     */
+    
     public void move(float tpf,Node localRootNode) {
        Iterator<Spatial> iteratorCactus = this.listBurung.iterator();
 
@@ -46,7 +52,10 @@ public class Burung  implements Add,Move{
         }
     }
   
- 
+   /**
+    * Method  untuk menambahakan burung ke dalam linkedList 
+    * @param localRootNode 
+    */
     public void addToLinkedList(Node localRootNode) {
      this.bird =localRootNode.getChild("Bird");//load cactus dari Scene
 //        CapsuleCollisionShape cacbody=new CapsuleCollisionShape(0.55f, 1.1f);
