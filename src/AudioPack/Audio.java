@@ -5,14 +5,11 @@
  */
 package AudioPack;
 
-import com.jme3.app.Application;
-import com.jme3.app.SimpleApplication;
-import com.jme3.app.state.AbstractAppState;
-import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioNode;
 import com.jme3.scene.Node;
+
 
 /**
  * kelas Untuk memberikan backSound pada game
