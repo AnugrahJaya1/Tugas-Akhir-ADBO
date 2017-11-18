@@ -10,33 +10,28 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 
 /**
- *
+ * kelas yang mengimplementasikan interface Setting
  * @author GL552VX
  */
 public class SettingLight implements Setting{
     DirectionalLight directionalLight;
-    
     /**
-     * Constructor yang berfungsi menginisialisasi atribut direction light
+     * Constructor kelas SettingLight
+     * menginisialisaikan kelas DirectionalLight
      */
     public SettingLight(){
         this.directionalLight=new DirectionalLight();
     }
     
-    /**
-     * Method yang berfungsi mensetetting Light
-     */
     @Override
     public void setting() {
         directionalLight.setDirection(new Vector3f(2.8f, -2.8f, -2.8f).normalizeLocal());
         directionalLight.setColor(ColorRGBA.White);//set color white
     }
-    
     /**
-     * Geter dari atribut directionalLight
-     * @return 
+     * getter untuk DirectionalLight
+     * @return directionLight
      */
-    
     public DirectionalLight getDirectionalLight(){
         return this.directionalLight;
     }

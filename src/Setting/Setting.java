@@ -6,10 +6,12 @@
 package Setting;
 
 /**
- *
+ * interface yang memiliki method setting
  * @author GL552VX
  */
 public interface Setting {
-    
+    /**
+     * method untuk melakukan setting
+     */
     public void setting();
 }

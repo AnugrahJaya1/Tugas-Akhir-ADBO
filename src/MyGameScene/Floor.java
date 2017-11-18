@@ -16,25 +16,25 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
- *
+ * kelas yang mengimplementasikan interface Move dan Korrdinat
  * @author GL552VX
  */
-public class Floor implements Move {
+public class Floor implements Move, KoordinatAwal {
+
     private Spatial floor;
     private LinkedList<Spatial> listFloor;
-    public Floor(AssetManager assetManager) {
-        this.listFloor=new LinkedList();
-        
-    }
-    
     /**
-     * Method untuk menggerakan Floor
-     * 
-     * @param tpf
-     * @param localRootNode 
+     * Contructor kelas Floor
+     * @param assetManager mendapatkan kelas AssetManager dari kelsa Engine
+     * agar memiliki assetManager yang sama
      */
+    public Floor(AssetManager assetManager) {
+        this.listFloor = new LinkedList();
+
+    }
+
     @Override
-    public void move(float tpf, Node localRootNode) {
+    public void move(float tpf, Node localRootNode, Node player) {
         Iterator<Spatial> iteratorFloor = this.listFloor.iterator();
 
         while (iteratorFloor.hasNext()) {
@@ -49,22 +49,22 @@ public class Floor implements Move {
             }
         }
     }
-    
     /**
-     * Method untuk menambahkan lantai ke dalam LinkedList
-     * @param localRootNode
-     * @param bullet 
+     * Method ini berfungsi untuk menambahkan model kedalam LinkedList
+     * @param localRootNode Node yang memiliki child Node
+     * @param bullet mendapatkan bulletAppState dari kjelas Engine
+     * memiliki fungssi untuk mengeraskan floor
      */
-
-    public void addToLinkedList(Node localRootNode,BulletAppState bullet) {
+    public void addToLinkedList(Node localRootNode, BulletAppState bullet) {
         this.floor = localRootNode.getChild("Floor");//load cactus dari Scene
         this.listFloor.addFirst(this.floor);//menambahkan floor ke-1
         this.listFloor.addLast(this.floor);//menambahkan floor ke-2
         bullet.getPhysicsSpace().add(this.floor.getControl(RigidBodyControl.class));//membuat floor padat
     }
 
-  
-   
-   
-    
+    @Override
+    public void setKoordinatAwal() {
+        this.floor.setLocalTranslation(-28.137022f, -3.6917496f, 45.410004f);
+    }
+
 }

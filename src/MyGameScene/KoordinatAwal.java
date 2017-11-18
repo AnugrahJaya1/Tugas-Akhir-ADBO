@@ -5,17 +5,13 @@
  */
 package MyGameScene;
 
-import com.jme3.scene.Node;
-
 /**
- *
- * @author GL552VX
+ * kelas interface yang memiliki method setKoordinatAwal()
+ * @author User
  */
-public interface Attach {
+public interface KoordinatAwal {
     /**
-     * Method ini berfungsi untuk menemplkan suatu node ke Root yang di tuju 
-     * @param root  Node tujuan 
+     * Method yang memiliki fungsi mensetting koordinat awal model
      */
-    void attachToRoot(Node root);
-
+    public void setKoordinatAwal();
 }

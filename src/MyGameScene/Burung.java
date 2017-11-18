@@ -9,64 +9,61 @@ import AddAndMove.Add;
 import AddAndMove.Move;
 import Animation.Animation;
 import com.jme3.asset.AssetManager;
+import com.jme3.collision.CollisionResults;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
- *
+ * kelas ini merupakan subclass dari PlayGame
+ * kelas ini juga mengimplementasikan Add,Move,Koordinat
  * @author GL552VX
  */
-public class Burung  implements Add,Move{
+public class Burung extends PlayGame implements Add, Move,KoordinatAwal {
+
     private Spatial bird;
     private LinkedList<Spatial> listBurung;
-    public Burung(AssetManager assetManager) {
-        this.listBurung=new LinkedList();
-    }
-    
     /**
-     * method untuk menggerakan burung 
-     * @param tpf
-     * @param localRootNode 
+     * Contructor kelas Burung
+     * @param assetManager mendapatkan kelas AssetManager dari kelsa Engine
+     * agar memiliki assetManager yang sama
      */
-    
-    public void move(float tpf,Node localRootNode) {
-       Iterator<Spatial> iteratorCactus = this.listBurung.iterator();
+    public Burung(AssetManager assetManager) {
+        this.listBurung = new LinkedList();
+    }
+
+    @Override
+    public void move(float tpf, Node localRootNode, Node player) {
+        Iterator<Spatial> iteratorCactus = this.listBurung.iterator();
 
         while (iteratorCactus.hasNext()) {
-            Spatial iCactus = iteratorCactus.next();
-            localRootNode.attachChild(iCactus);
-            //if (player.collideWith(iCactus.getWorldBound(), new CollisionResults()) != 0) {//otomatis kalau kena kaktus
-            // System.out.println("collide");
-            // setEnabled(!isEnabled());//udah berhenti di ekor kalau 1024 x 740
-            // kalau 640 aman
-            //}
-            iCactus.move(0, 0, -2.5f * tpf);//bergerak di sumbu z dengan kecepatan -2.5f
-            //System.out.println("CACTUS " + iCactus.getLocalTranslation());
-            if (iCactus.getLocalTranslation().z <= -15) {
-                iCactus.setLocalTranslation(0.555555f, 1.52f, 10);//setting lokasi cactus baru 0.5f(posisi x)
+            Spatial iBurung = iteratorCactus.next();
+            localRootNode.attachChild(iBurung);
+            if (player.collideWith(iBurung.getWorldBound(), new CollisionResults()) != 0) {//otomatis kalau kena kaktus
+                super.setIsPlay(false);
+            }
+            iBurung.move(0, 0, -3f * tpf);//bergerak di sumbu z dengan kecepatan -2.5f
+            if (iBurung.getLocalTranslation().z <= -10) {
+                iBurung.setLocalTranslation(player.getLocalTranslation().x + 0.3f, 2f, 20);//setting lokasi burung baru 0.5f(posisi x)
                 //lokasi x=player.getLocalTranslation().x+0.5555555f
 
             }
         }
     }
-  
-   /**
-    * Method  untuk menambahakan burung ke dalam linkedList 
-    * @param localRootNode 
-    */
+
+    @Override
     public void addToLinkedList(Node localRootNode) {
-     this.bird =localRootNode.getChild("Bird");//load cactus dari Scene
-//        CapsuleCollisionShape cacbody=new CapsuleCollisionShape(0.55f, 1.1f);
-//        RigidBodyControl rb=new RigidBodyControl(cacbody,0f);
-//        this.cactus.addControl(rb);
-//        bulletAppState.getPhysicsSpace().add(rb);
-//        
-        this.bird.setLocalScale(0.4f);
+        this.bird = localRootNode.getChild("Bird");//load bird dari Scene
+        this.bird.setLocalTranslation(0.3f, 2f, 20);
+        this.bird.setLocalScale(0.25f);
         this.bird.setLocalTranslation(0.5f, 1.52f, 10);
-        this.listBurung.addFirst(this.bird);//menambahkan cactus ke-1
-        this.listBurung.addLast(this.bird);//menambahkan cactus ke-2
-        //bulletAppState.getPhysicsSpace().add(this.cactus.getControl(RigidBodyControl.class));
+        this.listBurung.addFirst(this.bird);//menambahkan bird ke-1
+        this.listBurung.addLast(this.bird);//menambahkan bird ke-2
+    }
+
+    @Override
+    public void setKoordinatAwal() {
+        this.bird.setLocalTranslation(0.3f, 2, 20);
     }
 }
