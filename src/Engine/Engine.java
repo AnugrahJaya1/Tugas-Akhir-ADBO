@@ -12,26 +12,14 @@ import MyGameScene.Floor;
 import MyGameScene.Kaktus;
 import MyGameScene.Scene;
 import Setting.SettingLight;
-import com.jme3.animation.AnimChannel;
-import com.jme3.animation.AnimControl;
-import com.jme3.animation.LoopMode;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
-import com.jme3.audio.AudioData;
-import com.jme3.audio.AudioData.DataType;
-import com.jme3.audio.AudioNode;
-import com.jme3.bounding.BoundingBox;
-import com.jme3.bounding.BoundingVolume;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
-import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.CharacterControl;
-import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.bullet.util.CollisionShapeFactory;
-import com.jme3.collision.CollisionResults;
 import com.jme3.input.ChaseCamera;
 import com.jme3.input.FlyByCamera;
 import com.jme3.input.InputManager;
@@ -45,7 +33,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
@@ -59,25 +46,15 @@ public class Engine extends AbstractAppState {
     private final AssetManager assetManager;
     private final InputManager inputManager;
     private BulletAppState bulletAppState;
-    private Node player;//diedit harusna spatial
+    private Node player;
     private CharacterControl playerControl;
     private final FlyByCamera flyByCamera;
     private final Camera cam;
     private ChaseCamera chaseCam;
-    private Node localNode;
-
-    private AnimChannel channel;
-    private AnimControl control;
-
     private final Vector3f playerWalkDirection = Vector3f.ZERO;
-
     private boolean left = false, right = false, up = false, down = false;
     private Spatial cactus;
-    //private Spatial burung;
     private LinkedList<Spatial> listCactus, listFloor;
-    private AudioNode backsound;
-    private AnimControl control2;
-    private AnimChannel channel2;
     private Audio audio;
     private Scene scene;
     private Kaktus kaktus;
@@ -85,6 +62,7 @@ public class Engine extends AbstractAppState {
     private SettingLight settingLight;
     private Burung burung;
     private Animation animation;
+
     /**
      * Constructor kelas Engine
      *
@@ -96,17 +74,18 @@ public class Engine extends AbstractAppState {
         inputManager = app.getInputManager();
         flyByCamera = app.getFlyByCamera();
         cam = app.getCamera();
-        localNode = new Node();
+        playerControl = new CharacterControl();
         player = new Node();
         this.listCactus = new LinkedList();
         this.listFloor = new LinkedList();
-        this.audio =new Audio();
-        this.scene=new Scene(assetManager);
-        this.kaktus=new Kaktus(assetManager);
-        this.floor=new Floor(assetManager);
-        this.settingLight=new SettingLight();
-        this.burung=new Burung(assetManager);
-        this.animation=new Animation();
+        this.audio = new Audio();
+        this.scene = new Scene(assetManager);
+        this.kaktus = new Kaktus(assetManager);
+        this.floor = new Floor(assetManager);
+        this.settingLight = new SettingLight();
+        this.burung = new Burung(assetManager);
+        this.animation = new Animation();
+
     }
 
     /**
@@ -121,8 +100,6 @@ public class Engine extends AbstractAppState {
         //bulletAppState.setDebugEnabled(true);
         stateManager.attach(bulletAppState);
         rootNode.attachChild(localRootNode);
-        
-        
         //load scene
         this.scene.attachToRoot(localRootNode);
         //load Kaktus
@@ -133,21 +110,19 @@ public class Engine extends AbstractAppState {
         this.burung.addToLinkedList(localRootNode);
         //load animasi
         this.animation.setAnimation(localRootNode, "Burung");
-        
-        this.settingAnimasiTrex();//blom di bikin oop
-        
+        this.animation.setAnimation(player, "Trex");
         //setting light
         this.settingLight();
         localRootNode.addLight(this.settingLight.getDirectionalLight());
         //camera setting
         this.settingCamera();//bloom oop 
         //load floor
-        this.floor.addToLinkedList(localRootNode,bulletAppState);
-        
+        this.floor.addToLinkedList(localRootNode, bulletAppState);
         this.audio.initAudio(assetManager, localRootNode);
-      
-        
+        this.controler();
+
     }
+
     @Override
     public void update(float tpf) {
         Vector3f camDir = cam.getDirection().clone();
@@ -181,16 +156,10 @@ public class Engine extends AbstractAppState {
             playerControl.setWalkDirection(playerWalkDirection);
         }
 
-        //this.moveCactus(tpf);//method agar kaktus gerak
-       
-        this.kaktus.move(tpf,localRootNode);
+        this.kaktus.move(tpf, localRootNode);
         this.floor.move(tpf, localRootNode);
         this.burung.move(tpf, localRootNode);
     }
-
-
-    
-    
 
     /**
      * Method loadPlayer method ini berfungsi untuk meload player dari folder
@@ -211,27 +180,6 @@ public class Engine extends AbstractAppState {
         player.attachChild(trex);
         localRootNode.attachChild(player);//menambahkan player kedalam localRootNode
     }
-    
-
-    /**
-     * Method settingAnimasi menyetting animasi memberikan speed
-     */
-    public void settingAnimasiTrex() {
-        control = player.getChild("Trex").getControl(AnimControl.class);
-        channel = control.createChannel();
-        channel.setAnim("Walk");
-        channel.setLoopMode(LoopMode.Loop);
-        channel.setSpeed(2f);//memberikan speed
-    }
-    
-//    public void settingAnimasiBurung() {
-//        control2 = localRootNode.getChild("Burung").getControl(AnimControl.class);
-//        channel2 = control2.createChannel();
-//        channel2.setAnim("Walk");
-//        channel2.setLoopMode(LoopMode.Loop);
-//        channel2.setSpeed(2f);//memberikan speed
-//    }
-    
 
     /**
      * Method settingLight memberikan light kepada backgroud agar scene bisa
@@ -242,7 +190,7 @@ public class Engine extends AbstractAppState {
         dr.setDirection(new Vector3f(2.8f, -2.8f, -2.8f).normalizeLocal());
         dr.setColor(ColorRGBA.White);//set color white
         rootNode.addLight(dr);//menambahkan dr kepada rootNode
-        this.controler();
+
     }
 
     /**
@@ -250,9 +198,9 @@ public class Engine extends AbstractAppState {
      */
     public void settingCamera() {
         flyByCamera.setEnabled(false);
-        chaseCam = new ChaseCamera(cam, player, inputManager);
-        cam.setLocation(new Vector3f(-3.1215358f, 5.0140944f, -7.774544f));
-        cam.setRotation(new Quaternion(0.20579396f, 0.18203616f, -0.03899343f, 0.9607243f)); 
+        //chaseCam = new ChaseCamera(cam, player, inputManager);
+        cam.setLocation(new Vector3f(-5.3264656f, 6.359166f, -8.943834f));
+        cam.setRotation(new Quaternion(0.21726707f, 0.24867764f, -0.057346355f, 0.9421602f));
 
     }
 
@@ -307,10 +255,4 @@ public class Engine extends AbstractAppState {
 
     }
 
-    /**
-     * Method update untuk menangani setiap update
-     *
-     * @param tpf
-     */
-    
 }

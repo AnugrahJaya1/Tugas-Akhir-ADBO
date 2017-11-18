@@ -17,10 +17,10 @@ import com.jme3.scene.Node;
  * @author GL552VX
  */
 public class Animation {
-    private AnimChannel channel;
-    private AnimControl control;
-    public void setAnimation(Node localRootNode,String modelName){
-        control = localRootNode.getChild(modelName).getControl(AnimControl.class);
+    protected AnimChannel channel;
+    protected AnimControl control;
+     public void setAnimation(Node root,String modelName){
+        control = root.getChild(modelName).getControl(AnimControl.class);
         channel = control.createChannel();
         channel.setAnim("Walk");
         channel.setLoopMode(LoopMode.Loop);
