@@ -8,14 +8,16 @@ package AddAndMove;
 import com.jme3.scene.Node;
 
 /**
- *
+ * interface ini memiliki method Move
  * @author GL552VX
  */
 public interface Move {
     /**
-     * Method ini berfungsi untuk menggerakan Sebuah model
-     * @param tpf
-     * @param localRootNode 
+     * Method ini berfungsi untuk menggerakan sebuah model
+     * @param tpf tpf didapatkan dari Method Update yang berasal dari AbstractAppState
+     * @param localRootNode Node yang memiliki child Node
+     * @param player node yang memiliki Models yang akan di Load
      */
-    public void move(float tpf,Node localRootNode);
+    
+    public void move(float tpf,Node localRootNode,Node player);
 }

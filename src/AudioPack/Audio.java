@@ -15,16 +15,16 @@ import com.jme3.audio.AudioNode;
 import com.jme3.scene.Node;
 
 /**
- *
+ * kelas Untuk memberikan backSound pada game
  * @author GL552VX
  */
 public class Audio {
 
     private AudioNode backsound;
     /**
-     * Method untuk menambahkan backsound ketika game dijalankan
+     * Method ini menambahkan backSounnd ketika game di jalankan
      * @param assetManager
-     * @param root 
+     * @param root Node tujuan  yang akan di attach backSound
      */
     public void initAudio(AssetManager assetManager,Node root) {
         backsound = new AudioNode(assetManager, "Sounds/Backsound/fixed mono.wav", AudioData.DataType.Buffer);//mengambil lagu dari 

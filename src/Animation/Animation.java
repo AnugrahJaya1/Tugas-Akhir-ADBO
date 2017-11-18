@@ -13,19 +13,19 @@ import com.jme3.scene.Node;
  */
 
 /**
- *
+ * Kelas untuk mengatur animasi
  * @author GL552VX
  */
 public class Animation {
     protected AnimChannel channel;
     protected AnimControl control;
-    
     /**
-     * Method ini berfungsi untuk Menset animasi ketika berjalan
-     * @param root
-     * @param modelName 
+     * Method ini berfungsi untuk mengeset Animasi ketika berjalan
+     * @param root Node inti yang memiliki Child Model yang diinginkan
+     * @param modelName  Nama model 
      */
-    public void setAnimation(Node root,String modelName){
+    
+     public void setAnimation(Node root,String modelName){
         control = root.getChild(modelName).getControl(AnimControl.class);
         channel = control.createChannel();
         channel.setAnim("Walk");

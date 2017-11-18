@@ -10,6 +10,8 @@ import AudioPack.Audio;
 import MyGameScene.Burung;
 import MyGameScene.Floor;
 import MyGameScene.Kaktus;
+import MyGameScene.KoordinatAwal;
+import MyGameScene.PlayGame;
 import MyGameScene.Scene;
 import Setting.SettingLight;
 import com.jme3.app.Application;
@@ -39,7 +41,7 @@ import java.util.LinkedList;
  *
  * @author User
  */
-public class Engine extends AbstractAppState {
+public class Engine extends AbstractAppState implements KoordinatAwal {
 
     private final Node rootNode;
     private final Node localRootNode = new Node("Level 1");
@@ -52,9 +54,7 @@ public class Engine extends AbstractAppState {
     private final Camera cam;
     private ChaseCamera chaseCam;
     private final Vector3f playerWalkDirection = Vector3f.ZERO;
-    private boolean left = false, right = false, up = false, down = false;
     private Spatial cactus;
-    private LinkedList<Spatial> listCactus, listFloor;
     private Audio audio;
     private Scene scene;
     private Kaktus kaktus;
@@ -62,6 +62,7 @@ public class Engine extends AbstractAppState {
     private SettingLight settingLight;
     private Burung burung;
     private Animation animation;
+    private PlayGame playGame;
 
     /**
      * Constructor kelas Engine
@@ -76,8 +77,6 @@ public class Engine extends AbstractAppState {
         cam = app.getCamera();
         playerControl = new CharacterControl();
         player = new Node();
-        this.listCactus = new LinkedList();
-        this.listFloor = new LinkedList();
         this.audio = new Audio();
         this.scene = new Scene(assetManager);
         this.kaktus = new Kaktus(assetManager);
@@ -85,7 +84,8 @@ public class Engine extends AbstractAppState {
         this.settingLight = new SettingLight();
         this.burung = new Burung(assetManager);
         this.animation = new Animation();
-
+        playGame = new PlayGame();
+        setEnabled(false);
     }
 
     /**
@@ -98,27 +98,42 @@ public class Engine extends AbstractAppState {
         super.initialize(stateManager, app);
         bulletAppState = new BulletAppState();
         //bulletAppState.setDebugEnabled(true);
+
         stateManager.attach(bulletAppState);
         rootNode.attachChild(localRootNode);
+
         //load scene
         this.scene.attachToRoot(localRootNode);
+
         //load Kaktus
         this.kaktus.addToLinkedList(localRootNode);
+        this.kaktus.setKoordinatAwal();
+
         //load player
         this.loadPlayer();
+
         //load burung
         this.burung.addToLinkedList(localRootNode);
+        this.burung.setKoordinatAwal();
+
         //load animasi
         this.animation.setAnimation(localRootNode, "Burung");
         this.animation.setAnimation(player, "Trex");
+
         //setting light
         this.settingLight();
         localRootNode.addLight(this.settingLight.getDirectionalLight());
+
         //camera setting
         this.settingCamera();//bloom oop 
+
         //load floor
         this.floor.addToLinkedList(localRootNode, bulletAppState);
+
+        //add background
         this.audio.initAudio(assetManager, localRootNode);
+
+        //add controler
         this.controler();
 
     }
@@ -138,27 +153,26 @@ public class Engine extends AbstractAppState {
 
         playerWalkDirection.set(0, 0, 0);
 
-        if (left) {
-            playerWalkDirection.addLocal(camLeft);
-        }
-        if (right) {
-            playerWalkDirection.addLocal(camLeft.negate());
-        }
-        if (up) {
-            playerWalkDirection.addLocal(camDir);
-        }
-        if (down) {
-            playerWalkDirection.addLocal(camDir.negate());
-        }
-
         if (player != null) {
             playerWalkDirection.multLocal(100f).multLocal(tpf);
             playerControl.setWalkDirection(playerWalkDirection);
         }
+        //System.out.println(this.play);
+        
+        
+        this.kaktus.move(tpf, localRootNode, player);
+        this.floor.move(tpf, localRootNode, player);
+        this.burung.move(tpf, localRootNode, player);
+        if (!this.kaktus.getIsPlay() || !this.burung.getIsPlay()) {
+            setEnabled(false);
+            
+        }
+        if (this.rest == true) {
+            this.restart();
+            this.kaktus.setIsPlay(true);
+            this.burung.setIsPlay(true);
+        }
 
-        this.kaktus.move(tpf, localRootNode);
-        this.floor.move(tpf, localRootNode);
-        this.burung.move(tpf, localRootNode);
     }
 
     /**
@@ -210,19 +224,18 @@ public class Engine extends AbstractAppState {
      */
     public void controler() {
         inputManager.addMapping("Pause", new KeyTrigger(KeyInput.KEY_P));
-        inputManager.addMapping("up", new KeyTrigger(KeyInput.KEY_W));
-        inputManager.addMapping("down", new KeyTrigger(KeyInput.KEY_S));
-        inputManager.addMapping("left", new KeyTrigger(KeyInput.KEY_A));
-        inputManager.addMapping("right", new KeyTrigger(KeyInput.KEY_D));
         inputManager.addMapping("jump", new KeyTrigger(KeyInput.KEY_SPACE));
+        inputManager.addMapping("restart", new KeyTrigger(KeyInput.KEY_R));
+        inputManager.addMapping("quit", new KeyTrigger(KeyInput.KEY_Q));
+        inputManager.addMapping("start", new KeyTrigger(KeyInput.KEY_S));
 
-        inputManager.addListener(actionListener, "up");
-        inputManager.addListener(actionListener, "down");
-        inputManager.addListener(actionListener, "left");
-        inputManager.addListener(actionListener, "right");
         inputManager.addListener(actionListener, "Pause");
         inputManager.addListener(actionListener, "jump");
+        inputManager.addListener(actionListener, "restart");
+        inputManager.addListener(actionListener, "quit");
+        inputManager.addListener(actionListener, "start");
     }
+    private boolean rest = false;
     /**
      *
      */
@@ -231,16 +244,15 @@ public class Engine extends AbstractAppState {
         public void onAction(String name, boolean keyPressed, float tpf) {
             if (name.equals("Pause") && !keyPressed) {
                 setEnabled(!isEnabled());
-            } else if (name.equals("up")) {
-                up = keyPressed;
-            } else if (name.equals("down")) {
-                down = keyPressed;
-            } else if (name.equals("left")) {
-                left = keyPressed;
-            } else if (name.equals("right")) {
-                right = keyPressed;
             } else if (name.equals("jump")) {
                 playerControl.jump();
+            } else if (name.equals("restart")) {
+                rest = true;
+                setEnabled(true);
+            } else if (name.equals("quit")) {
+                System.exit(0);
+            } else if (name.equals("start")) {
+                setEnabled(true);
             }
         }
     };
@@ -253,6 +265,19 @@ public class Engine extends AbstractAppState {
         rootNode.detachChild(localRootNode);
         super.cleanup();
 
+    }
+
+    public void restart() {
+        this.kaktus.setKoordinatAwal();
+        this.floor.setKoordinatAwal();
+        this.burung.setKoordinatAwal();
+        this.setKoordinatAwal();
+        this.rest = false;
+    }
+
+    @Override
+    public void setKoordinatAwal() {
+        this.player.setLocalTranslation(0, 0, 0);
     }
 
 }
