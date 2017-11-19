@@ -158,12 +158,13 @@ public class Engine extends AbstractAppState implements KoordinatAwal {
             playerWalkDirection.multLocal(100f).multLocal(tpf);
             playerControl.setWalkDirection(playerWalkDirection);
         }
-        //System.out.println(this.play);
-        
         
         this.kaktus.move(tpf, localRootNode, player);
         this.floor.move(tpf, localRootNode, player);
-        this.burung.move(tpf, localRootNode, player);
+        if(this.scoreBoard.getScore()>280){
+            this.burung.move(tpf, localRootNode, player);
+        }
+        
         if (!this.kaktus.getIsPlay() || !this.burung.getIsPlay()) {
             isAlive=false;
             setEnabled(false);
