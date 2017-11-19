@@ -35,7 +35,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import java.util.LinkedList;
 
 /**
  *
@@ -125,7 +124,7 @@ public class Engine extends AbstractAppState implements KoordinatAwal {
         localRootNode.addLight(this.settingLight.getDirectionalLight());
 
         //camera setting
-        this.settingCamera();//bloom oop 
+        this.settingCamera();
 
         //load floor
         this.floor.addToLinkedList(localRootNode, bulletAppState);
@@ -204,7 +203,6 @@ public class Engine extends AbstractAppState implements KoordinatAwal {
         dr.setDirection(new Vector3f(2.8f, -2.8f, -2.8f).normalizeLocal());
         dr.setColor(ColorRGBA.White);//set color white
         rootNode.addLight(dr);//menambahkan dr kepada rootNode
-
     }
 
     /**
@@ -215,12 +213,11 @@ public class Engine extends AbstractAppState implements KoordinatAwal {
         //chaseCam = new ChaseCamera(cam, player, inputManager);
         cam.setLocation(new Vector3f(-5.3264656f, 6.359166f, -8.943834f));
         cam.setRotation(new Quaternion(0.21726707f, 0.24867764f, -0.057346355f, 0.9421602f));
-
     }
 
     /**
      * Method controler
-     *
+     * 
      */
     public void controler() {
         inputManager.addMapping("Pause", new KeyTrigger(KeyInput.KEY_P));
@@ -236,6 +233,7 @@ public class Engine extends AbstractAppState implements KoordinatAwal {
         inputManager.addListener(actionListener, "start");
     }
     private boolean rest = false;
+    
     /**
      *
      */
@@ -257,16 +255,18 @@ public class Engine extends AbstractAppState implements KoordinatAwal {
         }
     };
 
-    /**
-     * Method cleanup
-     */
     @Override
     public void cleanup() {
         rootNode.detachChild(localRootNode);
         super.cleanup();
 
     }
-
+    /**
+     * Method ini berfungsi untuk mengembalikan
+     * posisi Trex(player),kaktus,floor,burung
+     * ke posisi awal pada saat game dimulai
+     * 
+     */
     public void restart() {
         this.kaktus.setKoordinatAwal();
         this.floor.setKoordinatAwal();
