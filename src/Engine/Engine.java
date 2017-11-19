@@ -35,6 +35,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import scoreBoard.ScoreBoard;
 
 /**
  *
@@ -62,7 +63,7 @@ public class Engine extends AbstractAppState implements KoordinatAwal {
     private Burung burung;
     private Animation animation;
     private PlayGame playGame;
-
+    private ScoreBoard scoreBoard;
     /**
      * Constructor kelas Engine
      *
@@ -84,6 +85,7 @@ public class Engine extends AbstractAppState implements KoordinatAwal {
         this.burung = new Burung(assetManager);
         this.animation = new Animation();
         playGame = new PlayGame();
+        scoreBoard=new ScoreBoard();
         setEnabled(false);
     }
 
@@ -163,6 +165,7 @@ public class Engine extends AbstractAppState implements KoordinatAwal {
         this.floor.move(tpf, localRootNode, player);
         this.burung.move(tpf, localRootNode, player);
         if (!this.kaktus.getIsPlay() || !this.burung.getIsPlay()) {
+            isAlive=false;
             setEnabled(false);
             
         }
@@ -233,7 +236,8 @@ public class Engine extends AbstractAppState implements KoordinatAwal {
         inputManager.addListener(actionListener, "start");
     }
     private boolean rest = false;
-    
+    private boolean isAlive=false;
+    private boolean isPause=false;
     /**
      *
      */
@@ -242,6 +246,7 @@ public class Engine extends AbstractAppState implements KoordinatAwal {
         public void onAction(String name, boolean keyPressed, float tpf) {
             if (name.equals("Pause") && !keyPressed) {
                 setEnabled(!isEnabled());
+                isPause=!isPause;
             } else if (name.equals("jump")) {
                 playerControl.jump();
             } else if (name.equals("restart")) {
@@ -251,6 +256,7 @@ public class Engine extends AbstractAppState implements KoordinatAwal {
                 System.exit(0);
             } else if (name.equals("start")) {
                 setEnabled(true);
+                isAlive=true;
             }
         }
     };
@@ -272,6 +278,8 @@ public class Engine extends AbstractAppState implements KoordinatAwal {
         this.floor.setKoordinatAwal();
         this.burung.setKoordinatAwal();
         this.setKoordinatAwal();
+        this.setScoreBoardAwal();
+        isAlive=false;
         this.rest = false;
     }
 
@@ -279,5 +287,55 @@ public class Engine extends AbstractAppState implements KoordinatAwal {
     public void setKoordinatAwal() {
         this.player.setLocalTranslation(0, 0, 0);
     }
-
+    /**
+     * Getter isPause
+     * @return true jika pause,false jika tidak pause
+     */
+    public boolean getIsPause(){
+        return this.isPause;
+    }
+    /**
+     * Method ini berfungsi untuk mensetting score awal
+     * menjadi 0 jika direstart
+     */
+    public void setScoreBoardAwal(){
+        this.scoreBoard.setScore(0);
+    }
+    /**
+     * setter untuk score
+     * @param score adalah nilai score yang 
+     * ingin disetting menjadi score
+     */
+    public void setScore(int score){
+        this.scoreBoard.setScore(score);
+    }
+    /**
+     * getter score
+     * @return mengembalikan score
+     */
+    public int getScore(){
+        return this.scoreBoard.getScore();
+    }
+    /**
+     * getter highscore
+     * @return mengambalikan highscore
+     */
+    public int getHighScore(){
+        return this.scoreBoard.getHighScore();
+    }
+    /**
+     * setter highscore
+     * melakukan perbandingan score dengan highScore
+     */
+    public void setHighScore(){
+        this.scoreBoard.setHighScore();
+    }
+    /**
+     * getter isAlive
+     * @return true jika game trex tidak menabrak
+     * false jika kalah
+     */
+    public boolean getIsAlive(){
+        return isAlive;
+    }
 }
