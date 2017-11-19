@@ -34,7 +34,7 @@ public class Burung extends PlayGame implements Add, Move,KoordinatAwal {
     }
 
     @Override
-    public void move(float tpf, Node localRootNode, Node player) {
+    public void move(float speed,float tpf, Node localRootNode, Node player) {
         Iterator<Spatial> iteratorCactus = this.listBurung.iterator();
 
         while (iteratorCactus.hasNext()) {
@@ -43,7 +43,7 @@ public class Burung extends PlayGame implements Add, Move,KoordinatAwal {
             if (player.collideWith(iBurung.getWorldBound(), new CollisionResults()) != 0) {//otomatis kalau kena kaktus
                 super.setIsPlay(false);
             }
-            iBurung.move(0, 0, -3f * tpf);//bergerak di sumbu z dengan kecepatan -2.5f
+            iBurung.move(0, 0, -speed * tpf);//bergerak di sumbu z dengan kecepatan -3f
             if (iBurung.getLocalTranslation().z <= -15) {
                 iBurung.setLocalTranslation(player.getLocalTranslation().x + 0.3f, 2f, 10);//setting lokasi burung baru 0.5f(posisi x)
                 //lokasi x=player.getLocalTranslation().x+0.5555555f

@@ -35,7 +35,7 @@ public class Kaktus extends PlayGame implements Move, Add, KoordinatAwal {
     }
 
     @Override
-    public void move(float tpf, Node localRootNode, Node player) {
+    public void move(float speed,float tpf, Node localRootNode, Node player) {
         Iterator<Spatial> iteratorCactus = this.listCactus.iterator();
 
         while (iteratorCactus.hasNext()) {
@@ -44,7 +44,7 @@ public class Kaktus extends PlayGame implements Move, Add, KoordinatAwal {
             if (player.collideWith(iCactus.getWorldBound(), new CollisionResults()) != 0) {//otomatis kalau kena kaktus
                 super.setIsPlay(false);
             }
-            iCactus.move(0, 0, -3f * tpf);//bergerak di sumbu z dengan kecepatan -2.5f
+            iCactus.move(0, 0, -speed * tpf);//bergerak di sumbu z dengan kecepatan -3f
             //System.out.println("CACTUS " + iCactus.getLocalTranslation());
             if (iCactus.getLocalTranslation().z <= -15) {
                 iCactus.setLocalTranslation(player.getLocalTranslation().x + 0.5555555f, 1.52f, 10);//setting lokasi cactus baru 0.5f(posisi x)

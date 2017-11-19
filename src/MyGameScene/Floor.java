@@ -34,7 +34,7 @@ public class Floor implements Move, KoordinatAwal {
     }
 
     @Override
-    public void move(float tpf, Node localRootNode, Node player) {
+    public void move(float speed,float tpf, Node localRootNode, Node player) {
         Iterator<Spatial> iteratorFloor = this.listFloor.iterator();
 
         while (iteratorFloor.hasNext()) {
@@ -42,7 +42,7 @@ public class Floor implements Move, KoordinatAwal {
             Spatial iFloor = iteratorFloor.next();
 
             //iFloor.setLocalTranslation(-28.137022f, -3.6917496f, 50.410004f);
-            iFloor.move(0, 0, -1.5f * tpf);//bergerak di sumbu z dengan kecepatan -1.5f
+            iFloor.move(0, 0, -speed/2.0f * tpf);//bergerak di sumbu z dengan kecepatan -1.5f
             //System.out.println("FLOOR " + iFloor.getLocalTranslation());
             if (iFloor.getLocalTranslation().z <= 11.6f) {
                 iFloor.setLocalTranslation(-28.137022f, -3.6917496f, 50.410004f);//setting lokasi floor baru
