@@ -63,6 +63,7 @@ public class Engine extends AbstractAppState implements KoordinatAwal {
     private Burung burung;
     private Animation animation;
     private PlayGame playGame;
+    private boolean anim=false;
     private ScoreBoard scoreBoard;
     private boolean rest = false,isAlive=false,isPause=false,gameOver=false;
     /**
@@ -119,8 +120,7 @@ public class Engine extends AbstractAppState implements KoordinatAwal {
         this.burung.setKoordinatAwal();
 
         //load animasi
-        this.animation.setAnimation(localRootNode, "Burung");
-        this.animation.setAnimation(player, "Trex");
+        
 
         //setting light
         this.settingLight();
@@ -142,19 +142,7 @@ public class Engine extends AbstractAppState implements KoordinatAwal {
 
     @Override
     public void update(float tpf) {
-        Vector3f camDir = cam.getDirection().clone();
-        Vector3f camLeft = cam.getLeft().clone();
-        camDir.y = 0;
-        camLeft.y = 0;
-        // memgubah koor tapi ga bisa lompat kalau di taro disini;
-
-        //playerControl.setPhysicsLocation(new Vector3f(0, 0, 0));
-        System.out.println(player.getLocalTranslation().x);//masih rubah2
-        camDir.normalizeLocal();
-        camLeft.normalizeLocal();
-
-        playerWalkDirection.set(0, 0, 0);
-
+  
         if (player != null) {
             playerWalkDirection.multLocal(100f).multLocal(tpf);
             playerControl.setWalkDirection(playerWalkDirection);
@@ -170,6 +158,12 @@ public class Engine extends AbstractAppState implements KoordinatAwal {
         this.floor.move(speed,tpf, localRootNode, player);
         if(this.scoreBoard.getScore()>200){
             this.burung.move(speed,tpf, localRootNode, player);
+        }
+         //load animasi
+         
+        if(anim==true){
+        this.animation.setAnimation(localRootNode, "Burung");
+        this.animation.setAnimation(player, "Trex");
         }
         
         if (!this.kaktus.getIsPlay() || !this.burung.getIsPlay()) {
@@ -236,7 +230,11 @@ public class Engine extends AbstractAppState implements KoordinatAwal {
         inputManager.addMapping("restart", new KeyTrigger(KeyInput.KEY_R));
         inputManager.addMapping("quit", new KeyTrigger(KeyInput.KEY_Q));
         inputManager.addMapping("start", new KeyTrigger(KeyInput.KEY_S));
-
+        
+         
+        
+        
+        
         inputManager.addListener(actionListener, "Pause");
         inputManager.addListener(actionListener, "jump");
         inputManager.addListener(actionListener, "restart");
@@ -263,6 +261,7 @@ public class Engine extends AbstractAppState implements KoordinatAwal {
             } else if (name.equals("start")) {
                 setEnabled(true);
                 isAlive=true;
+                anim=true;
             }
         }
     };
