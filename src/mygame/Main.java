@@ -14,7 +14,7 @@ import scoreBoard.ScoreBoard;
  * This is the Main Class of your Game. You should only do initialization here.
  * Move your Logic into AppStates or Controls
  *
- * @author User
+ * @author normenhansen
  */
 public class Main extends SimpleApplication {
 
@@ -24,16 +24,14 @@ public class Main extends SimpleApplication {
     }
     private int score;
     private float temp;
-
-    private ScoreBoard scoreBoard;
-    private PlayGame playGame;
+    private Engine engine;
 
     @Override
     public void simpleInitApp() {
-        stateManager.attach(new Engine(this));
-        this.scoreBoard = new ScoreBoard();
+        this.engine = new Engine(this);
+        stateManager.attach(this.engine);
+        //this.scoreBoard = new ScoreBoard();
         viewPort.setBackgroundColor(ColorRGBA.White);
-        //this.startGame();
 
     }
 
@@ -43,7 +41,6 @@ public class Main extends SimpleApplication {
 
         this.updateScore(tpf);
 
-        
         //this.scoreBoard();
     }
 
@@ -51,10 +48,12 @@ public class Main extends SimpleApplication {
     public void simpleRender(RenderManager rm) {
         //TODO: add render code
     }
+
     /**
-     * Method untuk melakukan update Score dan 
-     * menampilkannya dilayar
-     * @param tpf didapatkan dari method update yang berasal dari kelas SimpleApplication
+     * Method untuk melakukan update Score dan menampilkannya dilayar
+     *
+     * @param tpf didapatkan dari method update yang berasal dari kelas
+     * SimpleApplication
      */
     public void updateScore(float tpf) {
         guiNode.detachAllChildren();
@@ -71,23 +70,31 @@ public class Main extends SimpleApplication {
         scoreLabel.setText("Score : ");
         guiNode.attachChild(scoreLabel);
 
+        if (!this.engine.getIsAlive()) {
+            this.engine.setHighScore();
+        } else {
+            if (this.engine.getIsPause()) {
+                //int s = this.score;
+                this.engine.setScore(score);
+            } else {
+                if (this.temp >= 0.05f) {
+                    this.score++;
+                    this.engine.setScore(score);
+                    temp = 0;
+                } else {
+                    temp += tpf;
+                }
+            }
+        }
+
+        teks.setText(this.engine.getScore() + "");
+        guiNode.attachChild(teks);
+
         final BitmapText highScoreLabel = new BitmapText(guiFont, false);
         highScoreLabel.setSize(guiFont.getCharSet().getRenderedSize());
         highScoreLabel.setColor(ColorRGBA.Red);
         highScoreLabel.setLocalTranslation(700, 200, 0);
-        highScoreLabel.setText("High Score : ");
+        highScoreLabel.setText("High Score : " + this.engine.getHighScore());
         guiNode.attachChild(highScoreLabel);
-
-        if (this.temp >= 0.05f) {
-            this.score++;
-            this.scoreBoard.setScore(score);
-            temp = 0;
-        } else {
-            temp += tpf;
-        }
-        teks.setText(this.scoreBoard.getScore() + "");
-        guiNode.attachChild(teks);
     }
-
-
 }
