@@ -25,6 +25,7 @@ public class Main extends SimpleApplication {
     private int score;
     private float temp;
     private Engine engine;
+    private boolean start = true, gameOver = false;
 
     @Override
     public void simpleInitApp() {
@@ -32,7 +33,6 @@ public class Main extends SimpleApplication {
         stateManager.attach(this.engine);
         //this.scoreBoard = new ScoreBoard();
         viewPort.setBackgroundColor(ColorRGBA.White);
-
     }
 
     @Override
@@ -70,11 +70,33 @@ public class Main extends SimpleApplication {
         scoreLabel.setText("Score : ");
         guiNode.attachChild(scoreLabel);
 
+        final BitmapText message = new BitmapText(guiFont, false);
+        message.setSize(80);
+        message.setColor(ColorRGBA.White);
+        message.setLocalTranslation(380, 500, 0);
+
+        final BitmapText text = new BitmapText(guiFont, false);
+        text.setSize(guiFont.getCharSet().getRenderedSize());
+        text.setColor(ColorRGBA.White);
+        text.setLocalTranslation(0, 180, 0);
+        text.setText(this.getText1() + "\n" + this.getText2()
+                + "\n" + this.getText3() + "\n" + this.getText4()
+                + "\n" + this.getText5());
+        guiNode.attachChild(text);
+
         if (!this.engine.getIsAlive()) {
+            if (this.start) {
+                message.setText(this.getTextStart());
+                if (!this.engine.getIsAlive() && this.gameOver) {
+                    this.start = false;
+                }
+            } else {
+                message.setText(this.getTextGameOver());
+            }
             this.engine.setHighScore();
         } else {
             if (this.engine.getIsPause()) {
-                //int s = this.score;
+                message.setText(this.getTextPause());
                 this.engine.setScore(score);
             } else {
                 if (this.temp >= 0.05f) {
@@ -86,7 +108,7 @@ public class Main extends SimpleApplication {
                 }
             }
         }
-
+        guiNode.attachChild(message);
         teks.setText(this.engine.getScore() + "");
         guiNode.attachChild(teks);
 
@@ -96,5 +118,77 @@ public class Main extends SimpleApplication {
         highScoreLabel.setLocalTranslation(700, 200, 0);
         highScoreLabel.setText("High Score : " + this.engine.getHighScore());
         guiNode.attachChild(highScoreLabel);
+    }
+
+    /**
+     * getter text pause
+     *
+     * @return String "PAUSE"
+     */
+    public String getTextPause() {
+        return "PAUSE";
+    }
+
+    /**
+     * getter text start
+     *
+     * @return String "Start"
+     */
+    public String getTextStart() {
+        return "START";
+    }
+
+    /**
+     * getter text game over
+     *
+     * @return String "game\nover"
+     */
+    public String getTextGameOver() {
+        return "GAME\nOVER";
+    }
+
+    /**
+     * getter text 1
+     *
+     * @return "Tekan S untuk start"
+     */
+    public String getText1() {
+        return "Tekan S untuk Start";
+    }
+
+    /**
+     * getter text 2
+     *
+     * @return "Tekan R untuk restart"
+     */
+    public String getText2() {
+        return "Tekan R untuk Restart";
+    }
+
+    /**
+     * getter text 3
+     *
+     * @return "Tekan Q untuk keluar"
+     */
+    public String getText3() {
+        return "Tekan Q untuk keluar";
+    }
+
+    /**
+     * getter text 4
+     *
+     * @return "Tekan P untuk pause"
+     */
+    public String getText4() {
+        return "Tekan P untuk Pause";
+    }
+
+    /**
+     * getter text 5
+     *
+     * @return "Tekan Space untuk lompat
+     */
+    public String getText5() {
+        return "Tekan SPACE untuk lompat";
     }
 }
