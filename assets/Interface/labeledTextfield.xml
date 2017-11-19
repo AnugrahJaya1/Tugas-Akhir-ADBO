@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty-controls xmlns="http://nifty-gui.lessvoid.com/nifty-gui">
+    <controlDefinition name="labeled">
+        <panel id="GPanel1" childLayout="vertical" width="452px" x="-1px" y="-1px"  height="78px">
+                <control name="label" id="GLabel0" width="124px" x="-1px" y="-1px" text="$label" align="left" font="aurulent-sans-16.fnt" height="46px"/>
+                <control name="textfield" id="GTextfield0" width="100.0%"/>
+        </panel>
+    </controlDefinition>
+</nifty-controls>

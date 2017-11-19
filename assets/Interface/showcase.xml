@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<nifty xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://nifty-gui.lessvoid.com/nifty-gui" xsi:schemaLocation="https://raw.githubusercontent.com/void256/nifty-gui/1.4/nifty-core/src/main/resources/nifty.xsd https://raw.githubusercontent.com/void256/nifty-gui/1.4/nifty-core/src/main/resources/nifty.xsd">
+    <useControls filename="Interface/labeledTextfield.xml"/>
+    <useStyles filename="Interface/panelStyle.xml"/>
+    <useStyles filename="Interface/buttonStyle.xml"/>
+    <screen id="Splash" controller="mygame.Main">
+        <layer id="GLayer0" childLayout="center">
+            <image id="GImage0" filename="D:\5 Seconds of Summer\aaaa\trex untuk start screen.jpg" width="390px" x="-1px" y="-1px" height="267px"/>
+        </layer>
+    </screen>
+    <screen id="GScreen2">
+        <layer id="GLayer1" childLayout="center" width="" x="" y="" height="">
+            <panel id="GPanel0" childLayout="vertical" backgroundColor="#16a085" backgroundImage="D:\5 Seconds of Summer\aaaa\trex untuk start screen.jpg" width="453px" x="-1px" y="-1px" style="empty" height="273px">
+                <control name="labeled" id="GCostumControl0" childLayout="vertical" width="100.0%" x="-1px" y="-1px" valign="center" label="Name" height="71px"/>
+                <control name="labeled" id="GCostumControl1" width="100%" x="-1px" y="-1px" label="Age" height="78px">
+                    <control name="button" id="GButton0" childLayout="center" backgroundColor="#e67e22" width="453px" x="179px" y="252px" style="orgbutton" label="Start!" height="64px"/>
+                    <control name="button" id="GButton1" childLayout="center" backgroundColor="#c0392b" width="453px" x="177px" y="389px" style="orgbutton" label="Quit" height="39px"/>
+                </control>
+            </panel>
+            <image id="GImage3" filename="D:\5 Seconds of Summer\aaaa\trex untuk start screen.jpg" width="452px" x="175px" y="0px" valign="top" height="162px"/>
+        </layer>
+    </screen>
+</nifty>
