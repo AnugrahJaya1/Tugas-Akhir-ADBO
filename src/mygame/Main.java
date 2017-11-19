@@ -25,7 +25,7 @@ public class Main extends SimpleApplication {
     private int score;
     private float temp;
     private Engine engine;
-    private boolean start = true, gameOver = false;
+    //private boolean start = true, gameOver = false;
 
     @Override
     public void simpleInitApp() {
@@ -85,15 +85,13 @@ public class Main extends SimpleApplication {
         guiNode.attachChild(text);
 
         if (!this.engine.getIsAlive()) {
-            if (this.start) {
+            if (!this.engine.getGameOver()) {
                 message.setText(this.getTextStart());
-                if (!this.engine.getIsAlive() && this.gameOver) {
-                    this.start = false;
-                }
             } else {
                 message.setText(this.getTextGameOver());
             }
             this.engine.setHighScore();
+            this.score=0;
         } else {
             if (this.engine.getIsPause()) {
                 message.setText(this.getTextPause());
