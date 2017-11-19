@@ -14,7 +14,7 @@ import scoreBoard.ScoreBoard;
  * This is the Main Class of your Game. You should only do initialization here.
  * Move your Logic into AppStates or Controls
  *
- * @author normenhansen
+ * @author User
  */
 public class Main extends SimpleApplication {
 
@@ -89,14 +89,5 @@ public class Main extends SimpleApplication {
         guiNode.attachChild(teks);
     }
 
-//    public void startGame(){
-//        guiNode.detachAllChildren();
-//        guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
-//        final BitmapText teksAwal = new BitmapText(guiFont, false);
-//        teksAwal.setSize(guiFont.getCharSet().getRenderedSize());
-//        teksAwal.setColor(ColorRGBA.Red);
-//        teksAwal.setLocalTranslation(700, 200, 0);
-//        teksAwal.setText("NFONDFNHIBFONBHIOF");
-//        guiNode.attachChild(teksAwal);
-//    }
+
 }
