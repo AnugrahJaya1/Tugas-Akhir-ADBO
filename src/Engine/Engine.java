@@ -64,6 +64,7 @@ public class Engine extends AbstractAppState implements KoordinatAwal {
     private Animation animation;
     private PlayGame playGame;
     private ScoreBoard scoreBoard;
+    private boolean rest = false,isAlive=false,isPause=false,gameOver=false;
     /**
      * Constructor kelas Engine
      *
@@ -158,17 +159,23 @@ public class Engine extends AbstractAppState implements KoordinatAwal {
             playerWalkDirection.multLocal(100f).multLocal(tpf);
             playerControl.setWalkDirection(playerWalkDirection);
         }
+        float speed=0;
+        if(this.scoreBoard.getScore()<600){
+            speed=3;
+        }else{
+            speed=4;
+        }
         
-        this.kaktus.move(tpf, localRootNode, player);
-        this.floor.move(tpf, localRootNode, player);
+        this.kaktus.move(speed,tpf, localRootNode, player);
+        this.floor.move(speed,tpf, localRootNode, player);
         if(this.scoreBoard.getScore()>200){
-            this.burung.move(tpf, localRootNode, player);
+            this.burung.move(speed,tpf, localRootNode, player);
         }
         
         if (!this.kaktus.getIsPlay() || !this.burung.getIsPlay()) {
             isAlive=false;
+            gameOver=true;
             setEnabled(false);
-            
         }
         if (this.rest == true) {
             this.restart();
@@ -236,9 +243,7 @@ public class Engine extends AbstractAppState implements KoordinatAwal {
         inputManager.addListener(actionListener, "quit");
         inputManager.addListener(actionListener, "start");
     }
-    private boolean rest = false;
-    private boolean isAlive=false;
-    private boolean isPause=false;
+    
     /**
      *
      */
@@ -280,7 +285,8 @@ public class Engine extends AbstractAppState implements KoordinatAwal {
         this.burung.setKoordinatAwal();
         this.setKoordinatAwal();
         this.setScoreBoardAwal();
-        isAlive=false;
+        isAlive=true;
+        gameOver=false;
         this.rest = false;
     }
 
@@ -338,5 +344,13 @@ public class Engine extends AbstractAppState implements KoordinatAwal {
      */
     public boolean getIsAlive(){
         return isAlive;
+    }
+    /**
+     * getter gameOver
+     * @return true jika mati
+     * false jika tidak
+     */
+    public boolean getGameOver(){
+        return gameOver;
     }
 }
