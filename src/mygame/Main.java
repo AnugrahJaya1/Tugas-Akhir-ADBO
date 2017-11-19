@@ -60,12 +60,12 @@ public class Main extends SimpleApplication {
         guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
         final BitmapText teks = new BitmapText(guiFont, false);
         teks.setSize(guiFont.getCharSet().getRenderedSize());
-        teks.setColor(ColorRGBA.Red);
+        teks.setColor(ColorRGBA.White);
         teks.setLocalTranslation(950, 200, 0);
 
         final BitmapText scoreLabel = new BitmapText(guiFont, false);
         scoreLabel.setSize(guiFont.getCharSet().getRenderedSize());
-        scoreLabel.setColor(ColorRGBA.Red);
+        scoreLabel.setColor(ColorRGBA.White);
         scoreLabel.setLocalTranslation(850, 200, 0);
         scoreLabel.setText("Score : ");
         guiNode.attachChild(scoreLabel);
@@ -112,7 +112,7 @@ public class Main extends SimpleApplication {
 
         final BitmapText highScoreLabel = new BitmapText(guiFont, false);
         highScoreLabel.setSize(guiFont.getCharSet().getRenderedSize());
-        highScoreLabel.setColor(ColorRGBA.Red);
+        highScoreLabel.setColor(ColorRGBA.White);
         highScoreLabel.setLocalTranslation(700, 200, 0);
         highScoreLabel.setText("High Score : " + this.engine.getHighScore());
         guiNode.attachChild(highScoreLabel);
