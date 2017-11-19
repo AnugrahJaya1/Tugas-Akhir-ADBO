@@ -45,7 +45,7 @@ public class Burung extends PlayGame implements Add, Move,KoordinatAwal {
             }
             iBurung.move(0, 0, -3f * tpf);//bergerak di sumbu z dengan kecepatan -2.5f
             if (iBurung.getLocalTranslation().z <= -15) {
-                iBurung.setLocalTranslation(player.getLocalTranslation().x + 0.3f, 2f, 20);//setting lokasi burung baru 0.5f(posisi x)
+                iBurung.setLocalTranslation(player.getLocalTranslation().x + 0.3f, 2f, 10);//setting lokasi burung baru 0.5f(posisi x)
                 //lokasi x=player.getLocalTranslation().x+0.5555555f
 
             }
@@ -64,6 +64,6 @@ public class Burung extends PlayGame implements Add, Move,KoordinatAwal {
 
     @Override
     public void setKoordinatAwal() {
-        this.bird.setLocalTranslation(0.3f, 2, 20);
+        this.bird.setLocalTranslation(0.3f, 2, 45);
     }
 }
