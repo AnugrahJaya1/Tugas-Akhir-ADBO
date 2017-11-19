@@ -41,7 +41,9 @@ public class ScoreBoard {
         return highScore;
     }
     /**
-     * Method yang berfungsi untuk menampung hioghScore
+     * Method yang berfungsi untuk membandingkan
+     * score dengan highscore dan
+     * menampung hioghScore
      */
     public void setHighScore() {
         if(this.score<=this.highScore){
@@ -50,6 +52,4 @@ public class ScoreBoard {
             this.highScore=this.score;
         }
     }
-    
-    
 }
