@@ -161,7 +161,7 @@ public class Engine extends AbstractAppState implements KoordinatAwal {
         
         this.kaktus.move(tpf, localRootNode, player);
         this.floor.move(tpf, localRootNode, player);
-        if(this.scoreBoard.getScore()>280){
+        if(this.scoreBoard.getScore()>200){
             this.burung.move(tpf, localRootNode, player);
         }
         
